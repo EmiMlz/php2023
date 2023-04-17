@@ -51,48 +51,71 @@
         }
 
         public function __toString(){
-            return "Id de la Empresa - " . $this->getIdentificacionEmpresa() . "\n" . "Nombre de la Empresa - " . $this->getNombreEmpresa() . "\n" . "Viajes - " . $this->getColViajes() . "\n";
+            $laColeccionToString = $this->getColViajes();
+            $mensaje = "";
+            $mensaje = "Id de la Empresa - " . $this->getIdentificacionEmpresa() . "\n" . "Nombre de la Empresa - " . $this->getNombreEmpresa() . "\n" . "Viajes - \n";
+            for ($i=0; $i < count($laColeccionToString); $i++) { 
+                $mensaje .= "Viaje N° - " . ($i+1) . "\n";
+                $mensaje .= $laColeccionToString[$i];
+            }
+            return $mensaje;
         }
 
         public function incorporarViaje($objViaje){
+            $i=0;
             $laColeccionDeViajes = $this->getColViajes();
             $encontro= false;
-            for ($i=0; $i < count($laColeccionDeViajes) ; $i++) { 
-                if($laColeccionDeViajes[$i]['destino'] == $objViaje[$i]['destino']){
+           while (!$encontro && $i<count($laColeccionDeViajes)){
+                $unViaje=$laColeccionDeViajes[$i];
+                if($unViaje->getDestino() == $objViaje->getDestino() && $unViaje->getFecha() == $objViaje->getFecha() && $unViaje->getHoraPartida() == $objViaje->getHoraPartida()){
                     $encontro = true;
                 }
-                if($laColeccionDeViajes[$i]['fecha'] == $objViaje[$i]['fecha']){
-                    $encontro = true;
-                }
-                if($laColeccionDeViajes[$i]['horarioPartida'] == $objViaje[$i]['horarioPartida']){
-                    $encontro = true;
-                }
+                $i++;
             }
             if ($encontro==false) {
-                $this->setColViajes($objViaje);
+                $laColeccionDeViajes[]= $objViaje;
+                $this->setColViajes($laColeccionDeViajes);
             }
         }
 
-        /*public function darViajeADestino ($elDestino,$losAsientos){
-            $colConDestinoA[]= "";
-            $laColeccionDeViajes = array (
-                array('destino'=>"Madrid",'horaPartida'=>"12:00",'horaLlegada'=>"15:00",'numeroViaje'=>"1",'importe'=>10000,'fecha'=>"15/04",'cantAsientos'=>"30",'cantAsientosDisponibles'=>"15"),
-                array('destino'=>"Barilo",'horaPartida'=>"12:00",'horaLlegada'=>"15:00",'numeroViaje'=>"2",'importe'=>10000,'fecha'=>"15/04",'cantAsientos'=>"30",'cantAsientosDisponibles'=>"15")
-            );
+        public function darViajeADestino ($elDestino,$losAsientos){
+            $colConDestinoA=[];
             $i=0;
-            $encontro =false;
-            //$laColeccionDeViajes = $this->getColViajes();
-            while (!$encontro && $i<count($laColeccionDeViajes)) {
-                if ($elDestino == $laColeccionDeViajes[$i]['destino']){
-                    $colConDestinoA = $laColeccionDeViajes[$i];
-                    $encontro = true;
-                    if ($) {
-                        # code...
+            $laColeccionDeViajes = $this->getColViajes();
+            for ($i=0; $i <count ($laColeccionDeViajes) ; $i++) { 
+                $unViaje = $laColeccionDeViajes[$i];
+                if ($unViaje->getDestino() == $elDestino && (($unViaje->getCantAsientosDisponibles()-$losAsientos) >=0)){
+                    $colConDestinoA[]=$unViaje;
+                }
+            }
+            return $colConDestinoA;
+        }
+        public function venderViajeADestino($canAsientos, $destino, $fecha){
+            $colViajesAVender = $this->getColViajes();
+            $encontro = false;
+            $i=0;
+            $viajeVendido = null;
+            while (!$encontro && count($colViajesAVender)>$i){
+                $unViaje=$colViajesAVender[$i];
+                if($destino == $unViaje->getDestino && $fecha == $unViaje->getFecha){
+                    if($unViaje->asignarAsientosDisponibles($canAsientos)){
+                        $encontro = true;
+                        $viajeVendido = $unViaje;
                     }
                 }
                 $i++;
             }
-            print_r ($colConDestinoA);
-        }*/
+            return $viajeVendido;
+        }
+
+        public function montoRecaudado(){
+            $laColeccionDeViajes = $this->getColViajes();
+            $acumulador=0;
+            for ($i=0; $i < count($laColeccionDeViajes); $i++) { 
+                $unViaje = $laColeccionDeViajes[$i];
+                $acumulador += ($unViaje->getCantAsientos() - $unViaje->getCantAsientosDisponibles()) * $unViaje->getImporte(); 
+            }
+            return $acumulador;
+        }
     }
 ?>
