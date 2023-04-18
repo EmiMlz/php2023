@@ -37,10 +37,10 @@
         public function setTelefono($telefono){
             $this->telefono = $telefono;
         }
-        
+
         public function __toString()
         {
-            return "Nombre - " . $this->nombre . "\n" . "Apellido - " . $this->apellido . "\n" . "DNI - " . $this->dni . "Telefono - " . $this->telefono . "\n";
+            return "Nombre - " . $this->nombre . "\nApellido - " . $this->apellido . "\nDNI - " . $this->dni . "\nTelefono - \n" . $this->telefono . "\n";
         }
     }   
 ?>

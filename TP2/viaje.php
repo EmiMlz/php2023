@@ -1,137 +1,153 @@
 <?php
     class ViajeFeliz {
-    //Asignacion de nombre a las propiedades de la clase
-    private $viajeId;
-    private $destino;
-    private $cantMaxPasajeros;
-    private $pasajeros;
-    private $viajeArreglado;
-    /** Metodo constructor de propiedades internas de la clase */
-    public function __construct ($viajeId,$destino,$cantMaxPasajeros,$pasajeros,$viajeArreglado) {
-        $this->viajeId = $viajeId;
-        $this->destino = $destino;
-        $this->cantMaxPasajeros = $cantMaxPasajeros;
-        $this->pasajeros = $pasajeros;
-        $this->viajeArreglado = array();
-    }
-    /** Metodo de acceso a las propiedades de la clase */
-    public function getViajeId(){
-       return $this->viajeId;
-    }
-    public function getDestino(){
-       return $this->destino;
-    }
-    public function getCantMaxPasajeros(){
-       return $this->cantMaxPasajeros;
-    }
-    public function getPasajeros(){
-        return $this->pasajeros;
-    }
-    public function getViajeArreglado(){
-        return $this->viajeArreglado;
-    }
-    /** Metodo de setteo a las propiedades de la clase */
-    public function setViajeId($viajeId){
-        return $this->viajeId = $viajeId;
-    }
-    public function setDestino($destino){
-        return $this->destino = $destino;
-    }
-    public function setCantMaxPasajeros($cantMaxPasajeros){
-        return $this->cantMaxPasajeros = $cantMaxPasajeros;
-    }
-    public function setPasajeros($pasajeros){
-        return $this->pasajeros = $pasajeros;
-    }
-    public function setViajeArreglado($viajeArreglado){
-        return $this->viajeArreglado = $viajeArreglado;
-    }
-    public function cargarViaje($viajeId, $destino, $cantMaxPasajeros, $pasajeros){
-        $viaje = array ('idViaje'=>$viajeId, 'destino'=>$destino, 'cantMaxPasajeros'=>$cantMaxPasajeros, 'pasajeros'=>array());
-        for ($i = 0; $i < count($pasajeros); $i++){
-            $viaje['pasajeros'][] = array ('nombre'=>$pasajeros[$i]['nombre'], 'apellido'=>$pasajeros[$i]['apellido'], 'dni'=>$pasajeros[$i]['dni']);
+        //Asignacion de nombre a las propiedades de la clase
+        private $viajeId;
+        private $destino;
+        private $cantMaxPasajeros;
+        private $colPasajeros = [];
+        private $cantPasajeros;
+        private $personaResponable;
+        /** Metodo constructor */
+        public function __construct ($viajeId,$destino,$cantMaxPasajeros,$colPasajeros,$cantPasajeros,$personaResponable) {
+            $this->viajeId = $viajeId;
+            $this->destino = $destino;
+            $this->cantMaxPasajeros = $cantMaxPasajeros;
+            $this->colPasajeros = $colPasajeros;
+            $this->cantPasajeros = $cantPasajeros;
+            $this->personaResponable = $personaResponable;
         }
-        $viajeArreglado = $this->getViajeArreglado();
-        $viajeArreglado[] = $viaje;
-        $this->setViajeArreglado($viajeArreglado);
-    }
-    function modificarViaje($miViajeId) {
-        $idExiste = false;
-        foreach ($this->viajeArreglado as $key=>$viaje) {
-            if ($viaje['idViaje'] == $miViajeId) {
-                $idExiste = true;
-                echo "Que dato quiere modificar? 1: Para destino | 2: Para agregar,quitar un pasajero o modificar un pasajero\n";
-                $opcionMenuMod = trim(fgets(STDIN));
-                switch ($opcionMenuMod) {
-                    case '1':
-                        echo "Ingrese el nuevo destino \n";
-                        $modDestino = trim(fgets(STDIN));
-                        $this->viajeArreglado[$key]['destino'] =  $modDestino;
-                        break;
-                    case '2':
-                        echo "1: Agregar pasajero\n";
-                        echo "2: Quitar pasajero\n";
-                        echo "3: Modificar datos de pasajero\n";
-                        $opcionPasajero = trim(fgets(STDIN));
-                        switch ($opcionPasajero) {
-                            case '1':
-                                echo "Ingrese el nombre del pasajero: \n";
-                                $nombrePasajero = trim(fgets(STDIN));
-                                echo "Ingrese el apellido del pasajero: \n";
-                                $apellidoPasajero = trim(fgets(STDIN));
-                                echo "Ingrese el DNI del pasajero: \n";
-                                $dniPasajero = trim(fgets(STDIN));
-                                $this->viajeArreglado[$key]['pasajeros'][] = ['nombre'=>$nombrePasajero, 'apellido'=> $apellidoPasajero,'dni'=>$dniPasajero];
-                                break;
-                            case '2':
-                                echo "Ingrese el DNI del pasajero que desea quitar: \n";
-                                $dniPasajeroQuitar = trim(fgets(STDIN));
-                                $indicesEliminar = array();
-                                foreach ($this->viajeArreglado[$key]['pasajeros'] as $indice => $pasajero) {
-                                    if ($pasajero['dni'] == $dniPasajeroQuitar) {
-                                            $indicesEliminar[] = $indice;
-                                    }  
-                                }
-                                foreach ($indicesEliminar as $indice) {
-                                    unset($this->viajeArreglado[$key]['pasajeros'][$indice]);
-                                }
-                                $this->viajeArreglado[$key]['pasajeros'] = array_values($this->viajeArreglado[$key]['pasajeros']);
-                                break;
-                                case '3':
-                                    echo "Ingrese el DNI del pasajero que desea modificar: \n";
-                                    $dniPasajeroMod = trim(fgets(STDIN));
-                                    foreach ($this->viajeArreglado[$key]['pasajeros'] as $indice => $pasajero) {
-                                        if ($pasajero['dni'] == $dniPasajeroMod) {
-                                            echo "Ingrese el nuevo nombre del pasajero: \n";
-                                            $nombrePasajeroMod = trim(fgets(STDIN));
-                                            echo "Ingrese el nuevo apellido del pasajero: \n";
-                                            $apellidoPasajeroMod = trim(fgets(STDIN));
-                                            echo "Ingrese el nuevo DNI del pasajero: \n";
-                                            $dniPasajeroMod = trim(fgets(STDIN));
-                                            $viajeArreglado[$key]['pasajeros'][$indice] = ['nombre'=>$nombrePasajeroMod, 'apellido'=>$apellidoPasajeroMod, 'dni'=>$dniPasajeroMod];
-                                        }
-                                    }
-                                    $this->viajeArreglado[$key]['pasajeros']= $viajeArreglado[$key]['pasajeros'];
-                                    break;
-                        }
+        /** Metodos de acceso a las propiedades */
+        public function getViajeId(){
+           return $this->viajeId;
+        }
+        public function getDestino(){
+           return $this->destino;
+        }
+        public function getCantMaxPasajeros(){
+           return $this->cantMaxPasajeros;
+        }
+        public function getColPasajeros(){
+            return $this->colPasajeros;
+        }
+        public function getCantPasajeros(){
+            return $this->cantPasajeros;
+        }
+        public function getPersonaResponsable(){
+            return $this->personaResponable;
+        }
+        /** Metodos de setteo */
+        public function setViajeId($viajeId){
+            return $this->viajeId = $viajeId;
+        }
+        public function setDestino($destino){
+            return $this->destino = $destino;
+        }
+        public function setCantMaxPasajeros($cantMaxPasajeros){
+            return $this->cantMaxPasajeros = $cantMaxPasajeros;
+        }
+        public function setCantPasajeros($cantPasajeros){
+            return $this->cantPasajeros = $cantPasajeros;
+        }
+        public function setColPasajeros($colPasajeros){
+            return $this->colPasajeros = $colPasajeros;
+        }
+        public function setPersonaResponsable($personaResponable){
+            return $this->personaResponable = $personaResponable;
+        }
+        /*public function cargarViaje($viajeId, $destino, $cantMaxPasajeros, $pasajeros){
+            $viaje = array ('idViaje'=>$viajeId, 'destino'=>$destino, 'cantMaxPasajeros'=>$cantMaxPasajeros, 'pasajeros'=>array());
+            for ($i = 0; $i < count($pasajeros); $i++){
+                $viaje['pasajeros'][] = array ('nombre'=>$pasajeros[$i]['nombre'], 'apellido'=>$pasajeros[$i]['apellido'], 'dni'=>$pasajeros[$i]['dni']);
+            }
+            $viajeArreglado = $this->getViajeArreglado();
+            $viajeArreglado[] = $viaje;
+            $this->setViajeArreglado($viajeArreglado);
+        }*/
+        function agregarPasajero($objPasajero) {
+            $laColPasajeros = $this->getColPasajeros();
+            $cantPasajeros = $this->getCantPasajeros();
+            $encontro = false;
+            $i=0;
+            while (!$encontro && count($laColPasajeros) >$i){
+                $unPasajero = $laColPasajeros[$i];
+                if ($unPasajero->getDni() == $objPasajero->getDni()) {
+                    $encontro = true;
+                }
+                $i++;
+            }
+            if ($encontro == false) {
+                if ($this->getCantMaxPasajeros()<=$cantPasajeros){
+                    echo "Se llego a la cantidad maxima de pasajeros";
+                }
+                else{
+                    echo "Cargado exitosamente al viaje";
+                    $laColPasajeros[]=$objPasajero;
+                    $cantPasajeros++;
+                    $this->setColPasajeros($laColPasajeros);
+                    $this->setCantPasajeros($cantPasajeros);
                 }
             }
+            return $encontro;
         }
-    }
-    public function __toString(){
-        $mensaje = '';
-        foreach ($this->viajeArreglado as $viajeArreglado) {
-            $mensaje .= 'Id: ' . $viajeArreglado['idViaje'] . ' Destino: ' . $viajeArreglado['destino'] . "\n";
-            if (count($viajeArreglado['pasajeros']) > 0) {
-                $mensaje .= 'Pasajeros: ' . "\n";
-                foreach ($viajeArreglado['pasajeros'] as $pasajero) {
-                    $mensaje .= '- Nombre: ' . $pasajero['nombre'] . "\n" ."  Apellido: " . $pasajero['apellido'] . "\n" . "  Dni: " . $pasajero['dni'] . "\n";
+        /** Esta funcion elimina a un pasajero.
+         * @param INT $dni
+         * @return BOOLEAN
+         */
+        public function eliminarPasajero($dni) {
+            $laColPasajeros = $this->getColPasajeros();
+            $cantPasajeros = $this->getCantPasajeros();
+            $encontro = false;
+            $i = 0;
+            while ($i < count($laColPasajeros) && !$encontro) {
+                $unPasajero = $laColPasajeros[$i];
+                if ($unPasajero->getDni() == $dni) {
+                    unset($laColPasajeros[$i]);
+                    $laColPasajeros = array_values($laColPasajeros);
+                    $this->setColPasajeros($laColPasajeros);
+                    $encontro = true;
+                    $cantPasajeros--;
+                    $this->setCantPasajeros($cantPasajeros);
                 }
-            } else {
-                $mensaje .= 'No hay pasajeros en este viaje.' . "\n";
+                $i++;
             }
+            return $encontro;
         }
-        return $mensaje;
+        public function modificarPasajero($nombre, $apellido, $dni, $telefono) {
+            $laColPasajeros = $this->getColPasajeros();
+            $encontro = false;
+            $i = 0;
+            while ($i < count($laColPasajeros) && !$encontro) {
+            $unPasajero = $laColPasajeros[$i];
+            if ($unPasajero->getDni() == $dni) {
+                $unPasajero->setNombre($nombre);
+                $unPasajero->setApellido($apellido);
+                $unPasajero->setTelefono($telefono);
+                $laColPasajeros[$i] = $unPasajero;
+                $this->setColPasajeros($laColPasajeros);
+                $encontro = true;
+            }
+            $i++;
+            }
+            return $encontro;
+        }
+
+        public function __toString() {
+            $salida = "Numero de identificacion del viaje: " . $this->getViajeId() . "\n";
+            $salida .= "Destino del viaje: " . $this->getDestino() . "\n";
+            $salida .= "Cantidad de pasajeros máximos del viaje: " . $this->getCantMaxPasajeros() . "\n";
+            $pasajerosArreglados = $this->getColPasajeros();
+            if (count($pasajerosArreglados) != 0) { //aca el error
+                for ($i = 0; $i < count($pasajerosArreglados); $i++) {
+                    $unPasajero = $pasajerosArreglados[$i];
+                    $salida .= "\nPasajero N°" . ($i+1) . "\n";
+                    $salida .= $unPasajero;
+                }
+                $salida .=  "\n";
+            }
+            $salida .= "Cantidad de pasajeros : " . $this->getCantPasajeros() . "\n";
+            $salida .= "Responsable del viaje:\n";
+            $salida .= $this->getPersonaResponsable();
+            return $salida;
+        }
     }
-}
 ?>
