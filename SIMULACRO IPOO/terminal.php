@@ -11,10 +11,7 @@
     5. Implementar el método ventaAutomatica($cantAsientos, $fecha, $destino, $empresa) que
     recibe por parámetro la cantidad de asientos que se requieren, una fecha, un destino y
     la empresa con la que se desea viajar. Automáticamente se registra la venta del viaje. (Para
-    la implementación de este método debe utilizarse uno de los métodos implementados en laclase
-    FACULTAD DE INFORMÁTICA
-    CÁTEDRA INTRODUCCIÓN POO
-    Viaje).
+    la implementación de este método debe utilizarse uno de los métodos implementados en laclase.
     6. Implementar el método empresaMayorRecaudacion retorna un objeto de la clase
     empresa que se co- rresponde con la de mayor recaudación.
     7. Implementar el método responsableViaje($numeroViaje) que recibe por parámetro un
@@ -27,6 +24,104 @@
         public function __construct($denominacion, $direccion,$colEmpresas)
         {
          $this->denominacion = $denominacion;
+         $this->direccion = $direccion;
+         $this->colEmpresas = $colEmpresas;
         }
+        // Metodos getters
+        public function getDenominacion() {
+            return $this->denominacion;
+        }
+        public function getDireccion() {
+            return $this->direccion;
+        }
+        public function getColEmpresas() {
+            return $this->colEmpresas;
+        }
+        //Metodos setters
+        public function setDenominacion($denominacion) {
+            $this->denominacion = $denominacion;
+        }
+        public function setDireccion($direccion) {
+            $this->direccion = $direccion;
+        }
+        public function setColEmpresas($colEmpresas) {
+            $this->colEmpresas = $colEmpresas;
+        }
+        /**
+        * recibe por parámetro la cantidad de asientos que se requieren, una fecha, un destino y
+        * la empresa con la que se desea viajar. Automáticamente se registra la venta del viaje 
+        */
+        public function ventaAutomatica($asientos, $fecha, $destino, $nombreEmpresa) {
+            $i = 0;
+            $laColEmpresas = $this->getColEmpresas();
+            $ventaExitosa = false;
+        
+            while ($i < count($laColEmpresas) && !$ventaExitosa) {
+                $unaEmpresa = $laColEmpresas[$i];
+                
+                if ($unaEmpresa->getNombreEmpresa() == $nombreEmpresa) {
+                    $viajeAVender = $unaEmpresa->venderViajeADestino($asientos, $fecha, $destino);
+                    
+                    if ($viajeAVender !== null) {
+                        $ventaExitosa = true; // Indicate that the sale was successful
+                        $detallesDeViaje = $viajeAVender; // Store trip details
+                    }
+                }
+                
+                $i++;
+            }
+            
+            if ($ventaExitosa) {
+                return $detallesDeViaje; // If the sale was successful, return trip details
+            } else {
+                return false; // If the sale was unsuccessful, return false
+            }
+        }
+        
+        
+        /** El método empresaMayorRecaudacion retorna un objeto de la clase
+        * empresa que se corresponde con la de mayor recaudación.
+        */
+       public function empresaMayorRecaudacion() {
+           // Obtener un array de objetos Empresa
+           $laColEmpresas = $this->getColEmpresas();
+           // Inicializar una variable para hacer un seguimiento del monto máximo recolectado
+           $maxMontoRecaudado = 0;
+           // Iterar a través de cada objeto Empresa en el array
+           foreach ($laColEmpresas as $unaEmpresa) {
+               // Si el monto recolectado de esta Empresa es mayor al máximo actual,
+               // actualizar el máximo para que sea el monto recolectado de esta Empresa
+               if ($unaEmpresa->montoReacudado() > $maxMontoRecaudado) {
+                   $empresaMayorMonto = $unaEmpresa; // Almacenar esta Empresa como la que tiene el monto más alto recolectado hasta ahora
+               }
+           }
+           //Devolver el objeto Empresa con el monto más alto recolectado
+           return $empresaMayorMonto;
+       }
+       /**
+        * Implementar el método responsableViaje($numeroViaje) que recibe por parámetro un
+        * numero de viaje y retorna al responsable del viaje
+        */
+        public function responsableViaje($numeroViaje){
+            $laColEmpresas = $this->getColEmpresas();
+            $i = 0;
+            $encontro = false;
+            while (!$encontro && $i < count($laColEmpresas)){
+                $unaEmpresa = $laColEmpresas[$i];
+                $j = 0;
+                $encontroViaje = false;
+                $laColViajes = $unaEmpresa->getColViajes();
+                while (!$encontroViaje && $j < count($laColViajes)){
+                    $unViaje = $laColViajes[$j];
+                    if ($unViaje->getNumero() == $numeroViaje){
+                        $encontroViaje = true;
+                        $responsable = $unViaje->getPersonaResponable();
+                    }
+                }
+            } 
+            return $responsable;
+        }
+        
+
     }
 ?>

@@ -97,10 +97,12 @@
             $viajeVendido = null;
             while (!$encontro && count($colViajesAVender)>$i){
                 $unViaje=$colViajesAVender[$i];
-                if($destino == $unViaje->getDestino && $fecha == $unViaje->getFecha){
+                if($destino == $unViaje->getDestino() && $fecha == $unViaje->getFecha()){
                     if($unViaje->asignarAsientosDisponibles($canAsientos)){
                         $encontro = true;
                         $viajeVendido = $unViaje;
+                        $colViajesAVender[$i] = $viajeVendido;
+                        $this->setColViajes($colViajesAVender);
                     }
                 }
                 $i++;
