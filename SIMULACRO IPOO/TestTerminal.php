@@ -16,11 +16,15 @@
 
     // Creamos una colección con un mínimo de 2 empresas, ejemplo Flecha Bus y Via Bariloche.
     $empresa_1 = new Empresa(1,"Flecha Bus",[]);
-    $empresa_2 = new Empresa(1,"Via Bariloche",[]);
-    $viaje1_empresa1 = new Viaje ("Madrid","15:00","22:00",1,20000,"30/04",30,5,"");
-    $viaje2_empresa1 = new Viaje ("Bariloche","15:00","22:00",2,10000,"30/04",30,5,"");
-    $viaje1_empresa2 = new Viaje ("Peru","17:00","22:00",3,1000,"30/04",30,5,"");
-    $viaje2_empresa2 = new Viaje ("España","15:00","23:59",4,20000,"30/04",30,5,"");
+    $empresa_2 = new Empresa(2,"Via Bariloche",[]);
+    $personaA = new Responsable("Juan", "Perez", 99999999, "Calle n°1", 
+"mail@mail.com", "299333222");
+$personaB = new Responsable("Pedro", "Juarez", 99999999, "Calle n°1", "mail@mail.com", 
+"299333222");
+    $viaje1_empresa1 = new Viaje ("Madrid","15:00","22:00",1,20000,"30/04",30,5,$personaA);
+    $viaje2_empresa1 = new Viaje ("Bariloche","15:00","22:00",2,10000,"30/04",30,5,$personaA);
+    $viaje1_empresa2 = new Viaje ("Peru","17:00","22:00",3,1000,"30/04",30,5,$personaB);
+    $viaje2_empresa2 = new Viaje ("España","15:00","23:59",4,20000,"30/04",30,5,$personaB);
     $empresa_1->incorporarViaje($viaje1_empresa1);
     $empresa_1->incorporarViaje($viaje2_empresa1);
     $empresa_2->incorporarViaje($viaje1_empresa2);
@@ -30,7 +34,14 @@
        $empresa_2,
     ];
     $miTerminal = new Terminal("Terminal de Prueba","Cipolletti",$miColEmpresas);
-    
-    echo $miTerminal->ventaAutomatica(3,"30/04","Bariloche","Flecha Bus");
+    $resultadoVentaAutomatica = $miTerminal->ventaAutomatica(3,"30/04","Bariloche",$miColEmpresas[0]);
     echo $resultadoVentaAutomatica;
+    //5)Invocar y visualizar el resultado del método empresaMayorRecaudacion.
+echo "-------------Punto 5-----------------\n"
+.$miTerminal->empresaMayorRecaudacion();
+
+//6)Invocar y visualizar el resultado del método responsableViaje 
+//correspondiente a uno de los números de viajes del punto 2.
+echo "-------------Punto 6-----------------\n"
+. $miTerminal->responsableViaje(2);
 ?>

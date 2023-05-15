@@ -93,10 +93,7 @@ class Viaje
         public function asignarAsientosDisponibles($cantAsientosOcupar){
             $disponibilidad = false;
             if ($this->cantAsientos>$this->getCantAsientosDisponibles()){
-                if($this->cantAsientosDisponibles<$cantAsientosOcupar){
-                    echo "No hay la cantidad de asientos que desea ocupar disponibles";
-                }
-                else{
+                if($this->getCantAsientosDisponibles()-$cantAsientosOcupar>0){
                     $this->setCantAsientosDisponibles($this->getCantAsientosDisponibles() - $cantAsientosOcupar);
                     $disponibilidad = true;
                 }
@@ -104,7 +101,7 @@ class Viaje
             return $disponibilidad;
         }
         public function __toString(){
-            return "Destino - " . $this->destino . "\n" . "Hora de Partida - " . $this->getHoraPartida() . "\n" . "Hora de Llegada - " . $this->horaLlegada . "\n" . "Numero del Viaje - " . $this->numero . "\n" . "Importe - " . $this->importe . "\n" . "Fecha - " . $this->fecha . "\n" . "Cantidad de Asientos - " . $this->cantAsientos . "\n" . "Cantidad de Asientos Disponibles - " . $this->cantAsientosDisponibles . "\n" . "Referencia a la Persona Responsable - " . $this->referencia . "\n";
+            return "Destino - " . $this->destino . "\n" . "Hora de Partida - " . $this->getHoraPartida() . "\n" . "Hora de Llegada - " . $this->horaLlegada . "\n" . "Numero del Viaje - " . $this->numero . "\n" . "Importe - " . $this->importe . "\n" . "Fecha - " . $this->fecha . "\n" . "Cantidad de Asientos - " . $this->cantAsientos . "\n" . "Cantidad de Asientos Disponibles - " . $this->cantAsientosDisponibles . "\n" . "Referencia a la Persona Responsable - \n" . $this->referencia . "\n";
         } //Segun mi gran analisis critico, para mostrar la referencia debemos asignarle la clase referencia a una variable y mostrarla por aca?
 
     }

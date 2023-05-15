@@ -51,31 +51,9 @@
         * recibe por parámetro la cantidad de asientos que se requieren, una fecha, un destino y
         * la empresa con la que se desea viajar. Automáticamente se registra la venta del viaje 
         */
-        public function ventaAutomatica($asientos, $fecha, $destino, $nombreEmpresa) {
-            $i = 0;
-            $laColEmpresas = $this->getColEmpresas();
-            $ventaExitosa = false;
-        
-            while ($i < count($laColEmpresas) && !$ventaExitosa) {
-                $unaEmpresa = $laColEmpresas[$i];
-                
-                if ($unaEmpresa->getNombreEmpresa() == $nombreEmpresa) {
-                    $viajeAVender = $unaEmpresa->venderViajeADestino($asientos, $fecha, $destino);
-                    
-                    if ($viajeAVender !== null) {
-                        $ventaExitosa = true; // Indicate that the sale was successful
-                        $detallesDeViaje = $viajeAVender; // Store trip details
-                    }
-                }
-                
-                $i++;
-            }
-            
-            if ($ventaExitosa) {
-                return $detallesDeViaje; // If the sale was successful, return trip details
-            } else {
-                return false; // If the sale was unsuccessful, return false
-            }
+        public function ventaAutomatica($asientos, $fecha, $destino, $empresa) {
+            $viajeVendido = $empresa->venderViajeADestino($asientos, $destino, $fecha);
+            return $viajeVendido;
         }
         
         
@@ -91,7 +69,7 @@
            foreach ($laColEmpresas as $unaEmpresa) {
                // Si el monto recolectado de esta Empresa es mayor al máximo actual,
                // actualizar el máximo para que sea el monto recolectado de esta Empresa
-               if ($unaEmpresa->montoReacudado() > $maxMontoRecaudado) {
+               if ($unaEmpresa->montoRecaudado() > $maxMontoRecaudado) {
                    $empresaMayorMonto = $unaEmpresa; // Almacenar esta Empresa como la que tiene el monto más alto recolectado hasta ahora
                }
            }
@@ -103,23 +81,15 @@
         * numero de viaje y retorna al responsable del viaje
         */
         public function responsableViaje($numeroViaje){
-            $laColEmpresas = $this->getColEmpresas();
-            $i = 0;
-            $encontro = false;
-            while (!$encontro && $i < count($laColEmpresas)){
-                $unaEmpresa = $laColEmpresas[$i];
-                $j = 0;
-                $encontroViaje = false;
-                $laColViajes = $unaEmpresa->getColViajes();
-                while (!$encontroViaje && $j < count($laColViajes)){
-                    $unViaje = $laColViajes[$j];
-                    if ($unViaje->getNumero() == $numeroViaje){
-                        $encontroViaje = true;
-                        $responsable = $unViaje->getPersonaResponable();
-                    }
-                }
-            } 
-            return $responsable;
+            $responsable = null;
+        $empresas = $this->getColEmpresas();
+        $i = 0;
+        while ($i < count($empresas) && $responsable==null) {
+            $objEmpresa = $empresas[$i];
+            $responsable = $objEmpresa->darInfoViaje($numeroViaje);  
+            $i++;         
+        }
+        return $responsable;
         }
         
 

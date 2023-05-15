@@ -65,6 +65,7 @@
             $i=0;
             $laColeccionDeViajes = $this->getColViajes();
             $encontro= false;
+            $exito = false;
            while (!$encontro && $i<count($laColeccionDeViajes)){
                 $unViaje=$laColeccionDeViajes[$i];
                 if($unViaje->getDestino() == $objViaje->getDestino() && $unViaje->getFecha() == $objViaje->getFecha() && $unViaje->getHoraPartida() == $objViaje->getHoraPartida()){
@@ -75,12 +76,13 @@
             if ($encontro==false) {
                 $laColeccionDeViajes[]= $objViaje;
                 $this->setColViajes($laColeccionDeViajes);
+                $exito = true;
             }
+            return $exito;
         }
 
         public function darViajeADestino ($elDestino,$losAsientos){
             $colConDestinoA=[];
-            $i=0;
             $laColeccionDeViajes = $this->getColViajes();
             for ($i=0; $i <count ($laColeccionDeViajes) ; $i++) { 
                 $unViaje = $laColeccionDeViajes[$i];
@@ -90,25 +92,33 @@
             }
             return $colConDestinoA;
         }
-        public function venderViajeADestino($canAsientos, $destino, $fecha){
+        public function venderViajeADestino($cantAsientos, $destino, $fecha){
+            // Retrieve available trips
             $colViajesAVender = $this->getColViajes();
-            $encontro = false;
+        
+            // Initialize variables
             $i=0;
             $viajeVendido = null;
-            while (!$encontro && count($colViajesAVender)>$i){
+            $encontro = false;
+        
+            // Loop through available trips
+            while ($i < count($colViajesAVender) && !$encontro){
                 $unViaje=$colViajesAVender[$i];
+        
+                // Check if destination and date match the requested trip
                 if($destino == $unViaje->getDestino() && $fecha == $unViaje->getFecha()){
-                    if($unViaje->asignarAsientosDisponibles($canAsientos)){
-                        $encontro = true;
-                        $viajeVendido = $unViaje;
-                        $colViajesAVender[$i] = $viajeVendido;
-                        $this->setColViajes($colViajesAVender);
+                    $haydispo = $unViaje->asignarAsientosDisponibles($cantAsientos);
+                    if($haydispo){
+                        // Set variables
+                        $encontro =true;
+                    $viajeVendido = $unViaje;
                     }
                 }
                 $i++;
             }
             return $viajeVendido;
         }
+        
 
         public function montoRecaudado(){
             $laColeccionDeViajes = $this->getColViajes();
@@ -118,6 +128,21 @@
                 $acumulador += ($unViaje->getCantAsientos() - $unViaje->getCantAsientosDisponibles()) * $unViaje->getImporte(); 
             }
             return $acumulador;
+        }
+        public function darInfoViaje($numeroViaje)
+        {
+        $i = 0;
+        $objresponsable = null;
+        $colViajes = $this->getColViajes();
+        while ($i < count($colViajes) && $objresponsable == null) {
+                $objViaje = $colViajes[$i];
+                if ($objViaje->getNumero() == $numeroViaje) {
+                    $objresponsable = $objViaje->getReferencia();
+                }
+                $i++;
+            }
+        return $objresponsable;
+          
         }
     }
 ?>
