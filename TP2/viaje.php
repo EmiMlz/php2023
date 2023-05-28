@@ -7,14 +7,18 @@
         private $colPasajeros = [];
         private $cantPasajeros;
         private $personaResponable;
+        private $costoViaje;
+        private $costoTotal;
         /** Metodo constructor */
-        public function __construct ($viajeId,$destino,$cantMaxPasajeros,$colPasajeros,$cantPasajeros,$personaResponable) {
+        public function __construct ($viajeId,$destino,$cantMaxPasajeros,$colPasajeros,$cantPasajeros,$personaResponable,$costoViaje,$costoTotal) {
             $this->viajeId = $viajeId;
             $this->destino = $destino;
             $this->cantMaxPasajeros = $cantMaxPasajeros;
             $this->colPasajeros = $colPasajeros;
             $this->cantPasajeros = $cantPasajeros;
             $this->personaResponable = $personaResponable;
+            $this->costoViaje = $costoViaje;
+            $this->costoTotal = $costoTotal;
         }
         /** Metodos de acceso a las propiedades */
         public function getViajeId(){
@@ -35,7 +39,15 @@
         public function getPersonaResponsable(){
             return $this->personaResponable;
         }
+        public function getCostoViaje(){
+            return $this->costoViaje;
+        }
+        public function getCostoTotal(){
+            return $this->costoTotal;
+        }
+
         /** Metodos de setteo */
+
         public function setViajeId($viajeId){
             return $this->viajeId = $viajeId;
         }
@@ -54,15 +66,13 @@
         public function setPersonaResponsable($personaResponable){
             return $this->personaResponable = $personaResponable;
         }
-        /*public function cargarViaje($viajeId, $destino, $cantMaxPasajeros, $pasajeros){
-            $viaje = array ('idViaje'=>$viajeId, 'destino'=>$destino, 'cantMaxPasajeros'=>$cantMaxPasajeros, 'pasajeros'=>array());
-            for ($i = 0; $i < count($pasajeros); $i++){
-                $viaje['pasajeros'][] = array ('nombre'=>$pasajeros[$i]['nombre'], 'apellido'=>$pasajeros[$i]['apellido'], 'dni'=>$pasajeros[$i]['dni']);
-            }
-            $viajeArreglado = $this->getViajeArreglado();
-            $viajeArreglado[] = $viaje;
-            $this->setViajeArreglado($viajeArreglado);
-        }*/
+        public function setCostoViaje($costoViaje){
+            return $this->costoViaje = $costoViaje;
+        }
+        public function setCostoTotal($costoTotal){
+            return $this->costoTotal = $costoTotal;
+        }
+
         function agregarPasajero($objPasajero) {
             $laColPasajeros = $this->getColPasajeros();
             $cantPasajeros = $this->getCantPasajeros();
@@ -101,6 +111,10 @@
             while ($i < count($laColPasajeros) && !$encontro) {
                 $unPasajero = $laColPasajeros[$i];
                 if ($unPasajero->getDni() == $dni) {
+                    $incremento = $unPasajero->darPorcentajeIncremento();
+                    $recaudado = $this->getCostoTotal();
+                    $recaudado = $recaudado - ($this->getCostoViaje() + ($this->getCostoViaje() * $incremento / 100));
+                    $this->setCostoTotal($recaudado);
                     unset($laColPasajeros[$i]);
                     $laColPasajeros = array_values($laColPasajeros);
                     $this->setColPasajeros($laColPasajeros);
@@ -112,7 +126,7 @@
             }
             return $encontro;
         }
-        public function modificarPasajero($nombre, $apellido, $dni, $telefono) {
+        public function modificarPasajero($nombre, $apellido, $dni, $telefono,$numTicket,$numAsiento) {
             $laColPasajeros = $this->getColPasajeros();
             $encontro = false;
             $i = 0;
@@ -122,6 +136,8 @@
                 $unPasajero->setNombre($nombre);
                 $unPasajero->setApellido($apellido);
                 $unPasajero->setTelefono($telefono);
+                $unPasajero->setNumTicket($numTicket);
+                $unPasajero->setNumAsiento($numAsiento);
                 $laColPasajeros[$i] = $unPasajero;
                 $this->setColPasajeros($laColPasajeros);
                 $encontro = true;
@@ -131,12 +147,32 @@
             return $encontro;
         }
 
+        public function venderPasaje($objPasajero){
+            $encontroP = $this->agregarPasajero($objPasajero);
+            $costoFinalPasajero = 0;
+            $sumaTotal = $this->getCostoTotal();
+            if ($encontroP==false) {
+                $costoFinalPasajero = $this->getCostoViaje() * (1 + ($objPasajero->darPorcentajeIncremento()/100));
+                $sumaTotal += $costoFinalPasajero; 
+            }
+            $this->setCostoTotal($sumaTotal);
+            return $costoFinalPasajero;
+        }
+
+        public function hayPasajesDisponible() {
+            $hay = false;
+            if ($this->getCantPasajeros() < $this->getCantMaxPasajeros()) {
+                $hay = true;
+            }
+            return $hay;
+        }
+
         public function __toString() {
             $salida = "Numero de identificacion del viaje: " . $this->getViajeId() . "\n";
             $salida .= "Destino del viaje: " . $this->getDestino() . "\n";
             $salida .= "Cantidad de pasajeros máximos del viaje: " . $this->getCantMaxPasajeros() . "\n";
             $pasajerosArreglados = $this->getColPasajeros();
-            if (count($pasajerosArreglados) != 0) { //aca el error
+            if (count($pasajerosArreglados) != 0) {
                 for ($i = 0; $i < count($pasajerosArreglados); $i++) {
                     $unPasajero = $pasajerosArreglados[$i];
                     $salida .= "\nPasajero N°" . ($i+1) . "\n";
@@ -145,8 +181,10 @@
                 $salida .=  "\n";
             }
             $salida .= "Cantidad de pasajeros : " . $this->getCantPasajeros() . "\n";
-            $salida .= "Responsable del viaje:\n";
+            $salida .= "Responsable del viaje: \n";
             $salida .= $this->getPersonaResponsable();
+            $salida .= "Costo del viaje: " . $this->getCostoViaje();
+            $salida .= "\nTotal Recaudado: " . $this->getCostoTotal() . "\n";
             return $salida;
         }
     }
