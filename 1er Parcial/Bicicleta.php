@@ -17,16 +17,14 @@
         private $costo;
         private $anoFabrica;
         private $descripcion;
-        private $porcentaje;
         private $incrementoAnual;
         private $activa;
-        public function __construct($codigo,$costo,$anoFabrica,$descripcion,$porcentaje,$incrementoAnual,$activa)
+        public function __construct($codigo,$costo,$anoFabrica,$descripcion,$incrementoAnual,$activa)
         {
             $this->codigo = $codigo;
             $this->costo = $costo;
             $this->anoFabrica = $anoFabrica;
             $this->descripcion = $descripcion;
-            $this->porcentaje = $porcentaje;
             $this->incrementoAnual = $incrementoAnual;
             $this->activa = $activa;
         }
@@ -41,9 +39,6 @@
         }
         public function getDescripcion() {
             return $this->descripcion;
-        }
-        public function getPorcentaje() {
-            return $this->porcentaje;
         }
         public function getIncrementoAnual() {
             return $this->incrementoAnual;
@@ -66,9 +61,6 @@
         public function setDescripcion($descripcion){
             $this->descripcion = $descripcion;
         }
-        public function setPorcentaje($porcentaje){
-            $this->porcentaje = $porcentaje;
-        }
         public function setIncrementoAnual($incrementoAnual){
             $this->incrementoAnual = $incrementoAnual;
         }
@@ -76,7 +68,15 @@
             $this->activa = $activa;
         }
         public function __toString(){
-            return $this->codigo . "Codigo - " . $this->getCodigo() . "\nCosto - " . $this->getCosto() . "\n Año de Fabricado - " . $this->getAnoFabrica() . "\n Descripcion - " . $this->getDescripcion() . "\n Porcentaje - " . $this->getPorcentaje() . "\n Incremento Anual - " . $this->getIncrementoAnual() . "\n La Bici se encuentra -" . $this->getActiva();
+            $mensaje = "Codigo - " . $this->getCodigo() . "\nCosto - " . $this->getCosto() . "\nAño de Fabricado - " . $this->getAnoFabrica() . "\nDescripcion - " . $this->getDescripcion() . "\nIncremento Anual - " . $this->getIncrementoAnual() . "\nLa Bici se encuentra - " ;
+            if ($this->getActiva() == true){
+                $mensaje .= "Activa\n";
+            }
+            else {
+                $mensaje .= "Inactiva\n";
+            }
+            return $mensaje;
+            
         }
         /**darPrecioVenta el cual calcula el valor por el cual puede ser vendida una bici. Si la bici no se encuentra disponible para la venta retorna un valor < 0. Si la bici está disponible para la venta, el método realiza el siguiente cálculo: 
         $_venta = $_compra + $_compra * (anio * por_inc_anual) 
@@ -91,7 +91,7 @@
             }
             else {
                 //revisar calculo
-                $valorVenta = $this->getCosto() + $this->getCosto() * ($this->getAnoFabrica() * $this->getIncrementoAnual()); 
+                $valorVenta = $this->getCosto() + $this->getCosto() * (2023 - $this->getAnoFabrica()) * ($this->getIncrementoAnual()/100); 
             }
             return $valorVenta;
         }

@@ -11,14 +11,14 @@
     class Venta {
         private $numero;
         private $fecha;
-        private $colClientes;
+        private $objCliente;
         private $colBicicletas;
         private $precioFinal;
 
-        public function __construct($numero, $fecha, $colClientes, $colBicicletas, $precioFinal) {
+        public function __construct($numero, $fecha, $objCliente, $colBicicletas, $precioFinal) {
             $this->numero = $numero;
             $this->fecha = $fecha;
-            $this->colClientes = $colClientes;
+            $this->objCliente = $objCliente;
             $this->colBicicletas = $colBicicletas;
             $this->precioFinal = $precioFinal;
         }
@@ -31,8 +31,8 @@
         public function getFecha() {
             return $this->fecha;
         }
-        public function getColClientes() {
-            return $this->colClientes;
+        public function getObjCliente() {
+            return $this->objCliente;
         }
         public function getColBicicletas() {
             return $this->colBicicletas;
@@ -51,8 +51,8 @@
             $this->fecha = $fecha;
             return $this;
         }
-        public function setColClientes($colClientes) {
-            $this->colClientes = $colClientes;
+        public function setObjCliente($objCliente) {
+            $this->objCliente = $objCliente;
             return $this;
         }
         public function setColBicicletas($colBicicletas) {
@@ -65,17 +65,12 @@
         }
 
         public function __toString() {
-            $laColClientes = $this->getColClientes();
             $laColBicicletas = $this->getColBicicletas();
             $mensaje = "";
-            $mensaje .= "\nNumero - " . $this->getNumero() . "Fecha - \n". $this->getFecha();
-            $mensaje .= "\nClientes -";
-            for ($i=0; $i < count($laColClientes); $i++) { 
-                $miCliente = $laColClientes[$i];
-                $mensaje .= $miCliente; 
-            }
+            $mensaje .= "\nNumero - " . $this->getNumero() . "\nFecha - ". $this->getFecha();
+            $mensaje .= "\nClientes -\n" . $this->getObjCliente() . "\n";
             $mensaje .= "\n Bicicletas - \n";
-            for ($i=0; $i < count($laColBicicletas()); $i++) { 
+            for ($i=0; $i < count($laColBicicletas); $i++) { 
                 $miBicicleta = $laColBicicletas[$i];
                 $mensaje .= $miBicicleta; 
             }
@@ -87,15 +82,16 @@
         *,siempre y cuando sea posible la venta. El método cada vez que incorpora una  bicicleta a la venta, debe actualizar la variable instancia precio final de la venta. Utilizar el método que calcula el precio de venta de la bici donde crea necesario.
          */
         public function incorporarBicicleta($objBici) {
-            $laColBicicletas = $this->getColBicicletas();
-            $elPrecioFinal = $this->getPrecioFinal();
-            if ($objBici->darPrecioVenta()>0) {
+            $precioBici = $objBici->darPrecioVenta();
+            if ($precioBici !== -1) {
+                $laColBicicletas = $this->getColBicicletas();
                 $laColBicicletas[] = $objBici;
-                $elPrecioFinal += $objBici->darPrecioVenta();
+                $this->setColBicicletas($laColBicicletas);
+                $precioFinal = $this->getPrecioFinal();
+                $precioFinal += $precioBici;
+                $this->setPrecioFinal($precioFinal);
+
             }
-            $this->setPrecioFinal($elPrecioFinal);
-            $this->setColBicicletas($laColBicicletas);
-            
         }
     }
 ?>

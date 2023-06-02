@@ -10,14 +10,17 @@
         private $nombre;
         private $apellido;
         private $estado;
-        private $dni;
+        private $numDocumento;
+        private $tipoDocumento;
 
-        public function __construct($nombre, $apellido, $estado, $dni) {
+        public function __construct($nombre, $apellido, $estado, $numDocumento,$tipoDocumento) {
                 $this->nombre = $nombre;
                 $this->apellido = $apellido;
                 $this->estado = $estado;
-                $this->dni = $dni;
+                $this->numDocumento = $numDocumento;
+                $this->tipoDocumento = $tipoDocumento;
             }
+
         public function getNombre() {
             return $this->nombre;
         }
@@ -27,8 +30,11 @@
         public function getEstado() {
             return $this->estado;
         }
-        public function getDni() {
-            return $this->dni;
+        public function getNumDocumento() {
+            return $this->numDocumento;
+        }
+        public function getTipoDocumento() {
+            return $this->tipoDocumento;
         }
         public function setNombre($nombre) {
             $this->nombre = $nombre;
@@ -39,12 +45,15 @@
         public function setEstado($estado) {
             $this->estado = $estado;
         }
-        public function setDni($dni) {
-            $this->dni = $dni;
+        public function setNumDocumento($numDocumento) {
+            $this->numDocumento = $numDocumento;
+        }
+        public function setTipoDocumento($tipoDocumento) {
+            $this->tipoDocumento = $tipoDocumento;
         }
         public function __toString()
         {
-            return "Nombre -" . $this->getNombre() . "\n Apellido - " . $this->getApellido() . "\n Estado - " . $this->getEstado() . "Tipo ". $this->getDni()['tipo'] ."\n . DNI - " . $this->getDni()['numero'];
+            return "Nombre - " . $this->getNombre() . "\nApellido - " . $this->getApellido() . "\nEstado - " . $this->getEstado() . "\nTipo - ". $this->getTipoDocumento() ."\nNumero de Documento - " . $this->getNumDocumento() . "\n";
         }
     }
 ?>
