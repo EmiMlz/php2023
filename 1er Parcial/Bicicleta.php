@@ -90,7 +90,6 @@
                 $valorVenta = -1;
             }
             else {
-                //revisar calculo
                 $valorVenta = $this->getCosto() + $this->getCosto() * (2023 - $this->getAnoFabrica()) * ($this->getIncrementoAnual()/100); 
             }
             return $valorVenta;

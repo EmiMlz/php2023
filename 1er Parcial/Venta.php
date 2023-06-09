@@ -93,5 +93,37 @@
 
             }
         }
+        
+        public function retornarTotalVentaNacional() {
+            $bicicletas = $this->getColBicicletas();
+            $sumatoriaVentaNacionales = 0;
+        
+            foreach ($bicicletas as $bici) {
+                if ($bici instanceof BicicletaNacional) {
+                    $sumatoriaVentaNacionales += $bici->darPrecioVenta();
+                }
+            }
+        
+            return $sumatoriaVentaNacionales;
+        }
+        /**
+         * Implementar el método retornarBicicletasImportadas() que retorna una colección de bicicletas importadas vinculadas a la venta. Si la venta solo se corresponde con bicicletas Nacionales la colección retornada debe ser vacía.
+
+         */
+        public function retornarBicicletasImportadas() {
+            $laColBicicletas = $this->getColBicicletas();
+            $colBicicletasImportadas = [];
+            for ($i=0; $i < count($laColBicicletas); $i++) { 
+                $unaBici = $laColBicicletas[$i];
+                if ($unaBici instanceof BicicletaImportada) {
+                    $colBicicletasImportadas[] = $unaBici;
+                }
+            }
+            return $colBicicletasImportadas;
+
+        }
     }
+    
+    
+    
 ?>

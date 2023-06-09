@@ -177,5 +177,29 @@ class Empresa
         return $coleccionVentasXCliente;
     }
     
+    /**
+     * Implementar el método informarSumaVentasNacionales() que recorre la colección de ventas realizadas por la empresa y retorna el importe total de ventas Nacionales realizadas por la empresa.
+     */
+    public function informarSumaVentasNacionales() {
+        $laColVentasRealizadas = $this->getColVentasRealizadas();
+        $totalVentasNacionales = 0;
+        for ($i=0; $i < count($laColVentasRealizadas) ; $i++) { 
+            $unaVenta = $laColVentasRealizadas[$i];
+            $totalVentasNacionales += $unaVenta->retornarTotalVentaNacional();
+        }
+        return $totalVentasNacionales;
+    }
+
+    /**Implementar el método informarVentasImportadas() que recorre la colección de ventas realizadas por la empresa y retorna una colección de ventas de bicicletas  importadas. Si en la venta al menos una de las bicicletas es importada la venta debe ser informada.
+     */
+    public function informarVentasImportadas() {
+        $laColVentasRealizadas = $this->getColVentasRealizadas();
+        $totalVentasImportadas = [];
+        for ($i=0; $i < count($laColVentasRealizadas); $i++) { 
+            $unaVenta = $laColVentasRealizadas[$i];
+            $totalVentasImportadas[] = $unaVenta->retornarBicicletasImportadas();
+        }
+        return $totalVentasImportadas;
+    }
 }
 ?>
